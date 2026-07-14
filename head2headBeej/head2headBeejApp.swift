@@ -15,3 +15,9 @@ struct head2headBeejApp: App {
         }
     }
 }
+
+
+#Preview
+{
+    ContentView()
+}

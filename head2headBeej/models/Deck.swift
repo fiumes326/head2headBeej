@@ -30,7 +30,7 @@ struct Deck {
                     else {
                         color = .red
                     }
-                    newDeck.append(Card(rank: rank, suit: suit, suitColor: color, isFlipped: false))
+                    newDeck.append(Card(rank: rank, suit: suit, suitColor: color, isFlipped: true))
                 }
             }
 

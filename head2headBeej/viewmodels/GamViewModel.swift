@@ -1,0 +1,111 @@
+import SwiftUI
+import Combine
+import Foundation
+
+final class GameViewModel: ObservableObject {
+    @Published var gameManager = GameManager()
+    @Published var deck: Deck = Deck()
+    @Published var transfer = false
+    @Published var peeking = false
+
+    var currentPlayerIndex: Int {
+        gameManager.players.firstIndex(where: { $0.id == gameManager.whoTurns }) ?? 0
+    }
+
+    var otherPlayerIndex: Int {
+        currentPlayerIndex == 0 ? 1 : 0
+    }
+
+    var currentPlayer: Player {
+        gameManager.players[currentPlayerIndex]
+    }
+
+    var otherPlayer: Player {
+        gameManager.players[otherPlayerIndex]
+    }
+
+    func deal() {
+        guard let startIndex = gameManager.players.firstIndex(where: { $0.id == gameManager.whoTurns }) else {
+            return
+        }
+
+        for index in gameManager.players.indices {
+            gameManager.players[index].currentHand.removeAll()
+            gameManager.players[index].score = 0
+        }
+        
+        for i in 0..<gameManager.players.count * 2 {
+            let playerIndex = (startIndex + i) % gameManager.players.count
+            if var card = deck.deal() {
+                card.isFlipped = i > gameManager.players.count - 1 //flip everyone's second card
+                gameManager.players[playerIndex].currentHand.append(card)
+                switch card.rank {
+                case .jack, .queen, .king:
+                    gameManager.players[playerIndex].score += 10
+                default:
+                    gameManager.players[playerIndex].score += card.rank.rawValue
+                }
+            }
+        }
+    }
+
+    func hit() {
+        guard let drawnCard = deck.deal() else { return }
+        guard let currentPlayerIndex = gameManager.players.firstIndex(where: { $0.id == gameManager.whoTurns }) else {
+            return
+        }
+        gameManager.players[currentPlayerIndex].currentHand.append(drawnCard)
+        switch drawnCard.rank {
+        case .jack, .queen, .king:
+            gameManager.players[currentPlayerIndex].score += 10
+        default:
+            gameManager.players[currentPlayerIndex].score += drawnCard.rank.rawValue
+        }
+    
+    }
+
+    func stand() {
+        if gameManager.dealFirst == gameManager.whoTurns {
+            hidePlayerCard()
+            gameManager.dealFirst = gameManager.players.first(where: { $0.id != gameManager.whoTurns })?.id ?? gameManager.dealFirst
+            guard let currentPlayerIndex = gameManager.players.firstIndex(where: { $0.id == gameManager.whoTurns }) else {
+                return
+            }
+            let nextPlayerIndex = (currentPlayerIndex + 1) % gameManager.players.count
+            gameManager.whoTurns = gameManager.players[nextPlayerIndex].id
+            transfer = true
+            }
+        else {
+            let winner = gameManager.checkWinner()
+            if winner == nil {
+                // It's a tie, change deal first and start new round
+                gameManager.dealFirst = gameManager.players.first(where: { $0.id != gameManager.dealFirst })?.id ?? gameManager.dealFirst
+                gameManager.whoTurns = gameManager.dealFirst
+                deal()
+            }
+            else {
+                gameManager.playerWin(player: winner!.id)
+
+            }
+        }
+    }
+    
+    func seePlayerCard() {
+        guard let currentPlayerIndex = gameManager.players.firstIndex(where: { $0.id == gameManager.whoTurns }) else {
+            return
+        }
+        gameManager.players[currentPlayerIndex].currentHand[0].isFlipped = true
+    }
+    
+    func hidePlayerCard() {
+        guard let currentPlayerIndex = gameManager.players.firstIndex(where:{ $0.id == gameManager.whoTurns}) else {
+            return
+        }
+        gameManager.players[currentPlayerIndex].currentHand[0].isFlipped = false
+    }
+
+    func getCurrentPlayer() -> Player? {
+        return gameManager.players.first(where: { $0.id == gameManager.whoTurns })
+    }
+
+}

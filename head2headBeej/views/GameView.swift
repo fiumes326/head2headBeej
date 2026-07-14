@@ -1,144 +1,85 @@
 import SwiftUI
 
 struct GameView: View {
-	let opponentName: String
-	let myName: String
-	let opponentCards: [Card]
-	let myCards: [Card]
-	var isUsersTurn: Bool = true
-	var onHit: () -> Void = {}
-	var onStand: () -> Void = {}
-
+	@EnvironmentObject var gameViewModel: GameViewModel
 
 	var body: some View {
 		ZStack {
-			Color(red: 0.08, green: 0.45, blue: 0.18)
+			Color(hex: "#35654D")
 				.ignoresSafeArea()
 
-			VStack(spacing: 20) {
-				VStack(spacing: 8) {
-					Text(opponentName)
-						.font(.headline)
-						.foregroundStyle(.white.opacity(0.9))
-					if opponentCards.isEmpty {
-						EmptyCardView(label: "No cards")
-					} else {
-						HStack(spacing: 12) {
-							ForEach(opponentCards) { card in
-								PlayingCardView(card: card)
-							}
-						}
-					}
-
-				}
-
-				Spacer()
-
-				if isUsersTurn {
-					ActionsView(onHit: onHit, onStand: onStand)
-				} else {
-					Text("Opponent Turn")
-						.font(.subheadline.weight(.semibold))
-						.foregroundStyle(.white.opacity(0.9))
-						.padding(.horizontal, 12)
-						.padding(.vertical, 8)
-						.background(.black.opacity(0.2), in: Capsule())
-				}
-
-				Spacer()
-
-				VStack(alignment: .leading, spacing: 10) {
-					Text(myName)
-						.font(.headline)
-						.foregroundStyle(.white.opacity(0.9))
+			VStack(spacing: 0) {
+				VStack(spacing: 16) {
+					Text(gameViewModel.otherPlayer.name)
+						.font(Font.custom("Arial Rounded MT Bold", size: 30))
+						.frame(maxWidth: .infinity, alignment: .center)
 
 					ScrollView(.horizontal, showsIndicators: false) {
-						HStack(spacing: 12) {
-							if myCards.isEmpty {
-								EmptyCardView(label: "No cards")
-							} else {
-								ForEach(myCards) { card in
-									PlayingCardView(card: card)
-								}
+						HStack(spacing: 20) {
+							ForEach(gameViewModel.otherPlayer.currentHand) { card in
+								CardView(card: card)
 							}
 						}
-						.padding(.horizontal, 2)
+						.frame(maxWidth: .infinity, alignment: .center)
+						.padding(.horizontal, 16)
 					}
 				}
-			}
-			.padding(16)
-		}
-	}
-}
+				.padding(.top, 20)
 
-private struct PlayingCardView: View {
-	let card: Card
+				Spacer()
 
-	var body: some View {
-		Group {
-			if card.isFlipped {
-				RoundedRectangle(cornerRadius: 12)
-					.fill(.white)
-					.overlay(alignment: .topLeading) {
-						VStack(alignment: .leading, spacing: 2) {
-							Text(rankText)
-								.font(.system(size: 16, weight: .bold, design: .rounded))
-							Text(card.suit.rawValue)
-								.font(.system(size: 16))
+				ActionsView(
+					onSwipeLeft: gameViewModel.hit,
+					onSwipeRight: {
+						gameViewModel.stand()
+					},
+					onSwipeDown: gameViewModel.seePlayerCard,
+					onSwipeUp: gameViewModel.hidePlayerCard
+				)
+				.frame(maxWidth: .infinity)
+				.padding(.vertical, 16)
+
+				Spacer()
+
+				VStack(spacing: 16) {
+					Text(gameViewModel.currentPlayer.name)
+						.font(Font.custom("Arial Rounded MT Bold", size: 30))
+						.frame(maxWidth: .infinity, alignment: .center)
+
+					ScrollView(.horizontal, showsIndicators: false) {
+						HStack(spacing: 20) {
+							ForEach(gameViewModel.currentPlayer.currentHand) { card in
+								CardView(card: card)
+							}
 						}
-						.foregroundStyle(card.suitColor == .red ? Color.red : Color.black)
-						.padding(8)
+						.frame(maxWidth: .infinity, alignment: .center)
+						.padding(.horizontal, 16)
 					}
-			} else {
-				RoundedRectangle(cornerRadius: 12)
-					.fill(
-						LinearGradient(
-							colors: [Color.blue.opacity(0.9), Color.indigo.opacity(0.95)],
-							startPoint: .topLeading,
-							endPoint: .bottomTrailing
-						)
-					)
-					.overlay {
-						RoundedRectangle(cornerRadius: 8)
-							.strokeBorder(.white.opacity(0.7), lineWidth: 2)
-							.padding(8)
-					}
+				}
+				.padding(.bottom, 20)
 			}
-		}
-		.frame(width: 74, height: 106)
-		.shadow(color: .black.opacity(0.22), radius: 5, x: 0, y: 3)
-	}
+			.frame(maxWidth: .infinity, maxHeight: .infinity)
 
-	private var rankText: String {
-		switch card.rank {
-		case .ace:
-			return "A"
-		case .jack:
-			return "J"
-		case .queen:
-			return "Q"
-		case .king:
-			return "K"
-		default:
-			return "\(card.rank.rawValue)"
+			if gameViewModel.transfer {
+				TransferView()
+			}
 		}
 	}
 }
 
-private struct EmptyCardView: View {
-	let label: String
+#Preview {
+	GameViewPreviewContainer()
+}
+
+private struct GameViewPreviewContainer: View {
+	@StateObject private var viewModel: GameViewModel = {
+		let viewModel = GameViewModel()
+		viewModel.deal()
+		return viewModel
+	}()
 
 	var body: some View {
-		RoundedRectangle(cornerRadius: 12)
-			.strokeBorder(.white.opacity(0.7), lineWidth: 2)
-			.frame(width: 74, height: 106)
-			.overlay {
-				Text(label)
-					.font(.caption)
-					.foregroundStyle(.white.opacity(0.85))
-					.multilineTextAlignment(.center)
-					.padding(6)
-			}
+		GameView()
+			.environmentObject(viewModel)
 	}
 }
-
