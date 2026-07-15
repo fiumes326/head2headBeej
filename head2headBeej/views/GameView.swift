@@ -63,6 +63,10 @@ struct GameView: View {
 			if gameViewModel.transfer {
 				TransferView()
 			}
+
+            if gameViewModel.winningView {
+                WinningView()
+            }
 		}
 	}
 }

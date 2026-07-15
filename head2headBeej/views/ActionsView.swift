@@ -15,13 +15,14 @@ struct ActionsView: View {
             }
             .frame(maxWidth: .infinity, alignment: .center)
 
-            if gameViewModel.peeking {
-                actionBadge(title: "Hide", systemImage: "arrow.up", tint: Color.yellow)
-                    .frame(maxWidth: 220)
-            } else {
-                actionBadge(title: "Peek", systemImage: "arrow.down", tint: Color.yellow)
-                    .frame(maxWidth: 220)
-            }
+                Group {
+                    if gameViewModel.peeking {
+                        actionBadge(title: "Hide", systemImage: "arrow.up", tint: Color.yellow)
+                    } else {
+                        actionBadge(title: "Peek", systemImage: "arrow.down", tint: Color.yellow)
+                    }
+                }
+                .frame(maxWidth: 220)
         }
         .frame(maxWidth: .infinity)
         .contentShape(Rectangle())

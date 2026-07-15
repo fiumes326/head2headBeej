@@ -7,6 +7,8 @@ final class GameViewModel: ObservableObject {
     @Published var deck: Deck = Deck()
     @Published var transfer = false
     @Published var peeking = false
+    @Published var winningView = false
+    @Published var RoundWinner: Player? = nil
 
     var currentPlayerIndex: Int {
         gameManager.players.firstIndex(where: { $0.id == gameManager.whoTurns }) ?? 0
@@ -67,7 +69,6 @@ final class GameViewModel: ObservableObject {
     func stand() {
         if gameManager.dealFirst == gameManager.whoTurns {
             hidePlayerCard()
-            gameManager.dealFirst = gameManager.players.first(where: { $0.id != gameManager.whoTurns })?.id ?? gameManager.dealFirst
             guard let currentPlayerIndex = gameManager.players.firstIndex(where: { $0.id == gameManager.whoTurns }) else {
                 return
             }
@@ -85,7 +86,12 @@ final class GameViewModel: ObservableObject {
             }
             else {
                 gameManager.playerWin(player: winner!.id)
+                RoundWinner = winner
+                winningView = true
 
+                // Prepare next round to start with the other player.
+                gameManager.dealFirst = gameManager.players.first(where: { $0.id != gameManager.dealFirst })?.id ?? gameManager.dealFirst
+                gameManager.whoTurns = gameManager.dealFirst
             }
         }
     }
@@ -95,6 +101,7 @@ final class GameViewModel: ObservableObject {
             return
         }
         gameManager.players[currentPlayerIndex].currentHand[0].isFlipped = true
+        peeking = true
     }
     
     func hidePlayerCard() {
@@ -102,6 +109,7 @@ final class GameViewModel: ObservableObject {
             return
         }
         gameManager.players[currentPlayerIndex].currentHand[0].isFlipped = false
+        peeking = false
     }
 
     func getCurrentPlayer() -> Player? {
