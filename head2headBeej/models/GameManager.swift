@@ -13,6 +13,7 @@ struct GameManager: Codable {
     var isGameOver: Bool
     var whoTurns: UUID
     var dealFirst: UUID
+    var gameWinner: Player? = nil
     
     init() {
         self.bestOf = 3
@@ -48,6 +49,6 @@ struct GameManager: Codable {
 
         return tie ? nil : winner
     }
-
+    
 
 }

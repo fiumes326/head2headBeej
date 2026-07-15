@@ -2,6 +2,7 @@ import SwiftUI
 
 struct GameView: View {
 	@EnvironmentObject var gameViewModel: GameViewModel
+	@Binding var hasStarted: Bool
 
 	var body: some View {
 		ZStack {
@@ -10,7 +11,7 @@ struct GameView: View {
 
 			VStack(spacing: 0) {
 				VStack(spacing: 16) {
-					Text(gameViewModel.otherPlayer.name)
+					Text("\(gameViewModel.otherPlayer.name) \(gameViewModel.otherPlayer.points)")
 						.font(Font.custom("Arial Rounded MT Bold", size: 30))
 						.frame(maxWidth: .infinity, alignment: .center)
 
@@ -43,7 +44,7 @@ struct GameView: View {
 
 				VStack(spacing: 16) {
                     HStack {
-					    Text(gameViewModel.currentPlayer.name)
+					    Text("\(gameViewModel.currentPlayer.name) \(gameViewModel.currentPlayer.points)")
 						    .font(Font.custom("Arial Rounded MT Bold", size: 30))
 						    .frame(maxWidth: .infinity, alignment: .center)
 
@@ -83,9 +84,11 @@ struct GameView: View {
 				TransferView()
 			}
 
-            if gameViewModel.winningView {
-                WinningView()
-            }
+			if gameViewModel.gameManager.isGameOver {
+				GameMenuView(hasStarted: $hasStarted)
+			} else if gameViewModel.winningView {
+				WinningView()
+			}
 		}
 	}
 }
@@ -102,7 +105,7 @@ private struct GameViewPreviewContainer: View {
 	}()
 
 	var body: some View {
-		GameView()
+		GameView(hasStarted: .constant(true))
 			.environmentObject(viewModel)
 	}
 }

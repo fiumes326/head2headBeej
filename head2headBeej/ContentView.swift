@@ -8,11 +8,11 @@
 import SwiftUI
 
 struct ContentView: View {
-    @StateObject var viewModel = GameViewModel()
     @State var hasStarted = false
+    @StateObject private var viewModel = GameViewModel()
     var body: some View {
       if hasStarted{
-        GameView()
+        GameView(hasStarted: $hasStarted)
         .environmentObject(viewModel)
       }
       else{

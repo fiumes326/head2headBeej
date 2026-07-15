@@ -108,6 +108,14 @@ final class GameViewModel: ObservableObject {
             }
             else {
                 gameManager.playerWin(player: winner!.id)
+                if isGameOver() {
+                    gameManager.isGameOver = true
+                    gameManager.gameWinner = winner
+                    winningView = false
+                    transfer = false
+                    peeking = false
+                    return
+                }
                 RoundWinner = winner
                 winningView = true
 
@@ -116,6 +124,10 @@ final class GameViewModel: ObservableObject {
                 gameManager.whoTurns = gameManager.dealFirst
             }
         }
+    }
+
+    func isGameOver() -> Bool {
+        return gameManager.players.contains(where: { $0.points > gameManager.bestOf/2 })
     }
     
     func seePlayerCard() {
@@ -138,4 +150,13 @@ final class GameViewModel: ObservableObject {
         return gameManager.players.first(where: { $0.id == gameManager.whoTurns })
     }
 
+    func restartGame() {
+        gameManager = GameManager()
+        deck = Deck()
+        deal()
+        transfer = false
+        peeking = false
+        winningView = false
+        RoundWinner = nil
+    }
 }
