@@ -42,6 +42,14 @@ final class GameViewModel: ObservableObject {
                 card.isFlipped = i > gameManager.players.count - 1 //flip everyone's second card
                 gameManager.players[playerIndex].currentHand.append(card)
                 switch card.rank {
+                case .ace:
+                    if gameManager.players[playerIndex].score + 11 <= 21 {
+                        gameManager.players[playerIndex].score += 11
+                        gameManager.players[playerIndex].aceValue = 11
+                    } else {
+                        gameManager.players[playerIndex].score += 1
+                        gameManager.players[playerIndex].aceValue = 1
+                    }
                 case .jack, .queen, .king:
                     gameManager.players[playerIndex].score += 10
                 default:
@@ -58,10 +66,23 @@ final class GameViewModel: ObservableObject {
         }
         gameManager.players[currentPlayerIndex].currentHand.append(drawnCard)
         switch drawnCard.rank {
+        case .ace:
+            if gameManager.players[currentPlayerIndex].score + 11 <= 21 {
+                gameManager.players[currentPlayerIndex].score += 11
+                gameManager.players[currentPlayerIndex].aceValue = 11
+            } else {
+                gameManager.players[currentPlayerIndex].score += 1
+                gameManager.players[currentPlayerIndex].aceValue = 1
+            }
         case .jack, .queen, .king:
             gameManager.players[currentPlayerIndex].score += 10
         default:
             gameManager.players[currentPlayerIndex].score += drawnCard.rank.rawValue
+        }
+
+        if gameManager.players[currentPlayerIndex].hasAnAce && gameManager.players[currentPlayerIndex].aceValue == 11 && gameManager.players[currentPlayerIndex].score > 21 {
+            gameManager.players[currentPlayerIndex].score -= 10
+            gameManager.players[currentPlayerIndex].aceValue = 1
         }
     
     }
@@ -77,6 +98,7 @@ final class GameViewModel: ObservableObject {
             transfer = true
             }
         else {
+            hidePlayerCard()
             let winner = gameManager.checkWinner()
             if winner == nil {
                 // It's a tie, change deal first and start new round

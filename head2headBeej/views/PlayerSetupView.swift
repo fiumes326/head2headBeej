@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct PlayerSetupView: View {
+    @State private var bestOf = 3
     @State private var player1Name = ""
     @State private var player2Name = ""
     @Binding var hasStarted: Bool
@@ -66,6 +67,13 @@ struct PlayerSetupView: View {
                             .stroke(.white.opacity(0.18), lineWidth: 1)
                     )
                     .shadow(color: .black.opacity(0.14), radius: 8, x: 0, y: 4)
+
+                Picker("Best of", selection: $bestOf) {
+                    Text("Best of 3").tag(3)
+                    Text("Best of 5").tag(5)
+                    Text("Best of 7").tag(7)
+                }
+                .pickerStyle(.segmented)
 
                 Button("Start Game") {
                     gameViewModel.gameManager.players[0].name = player1Name

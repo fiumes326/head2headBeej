@@ -42,10 +42,29 @@ struct GameView: View {
 				Spacer()
 
 				VStack(spacing: 16) {
-					Text(gameViewModel.currentPlayer.name)
-						.font(Font.custom("Arial Rounded MT Bold", size: 30))
-						.frame(maxWidth: .infinity, alignment: .center)
+                    HStack {
+					    Text(gameViewModel.currentPlayer.name)
+						    .font(Font.custom("Arial Rounded MT Bold", size: 30))
+						    .frame(maxWidth: .infinity, alignment: .center)
 
+                        if gameViewModel.peeking {
+                            Text("\(gameViewModel.currentPlayer.score)")
+                                .font(Font.custom("Arial Rounded MT Bold", size: 20))
+								.foregroundColor(Color(hex: "#1F3F31"))
+								.padding(.horizontal, 14)
+								.padding(.vertical, 8)
+								.background(
+									Capsule()
+										.fill(Color.white.opacity(0.9))
+								)
+								.overlay(
+									Capsule()
+										.stroke(Color(hex: "#1F3F31").opacity(0.25), lineWidth: 1)
+								)
+								.shadow(color: .black.opacity(0.12), radius: 4, x: 0, y: 2)
+								.frame(maxWidth: .infinity, alignment: .center)
+                        }
+                    }
 					ScrollView(.horizontal, showsIndicators: false) {
 						HStack(spacing: 20) {
 							ForEach(gameViewModel.currentPlayer.currentHand) { card in
