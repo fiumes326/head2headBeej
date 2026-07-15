@@ -8,23 +8,27 @@ struct ActionsView: View {
     var onSwipeUp: () -> Void
 
 	var body: some View {
-        VStack(alignment: .center) {
-            HStack(spacing: 12) {
-                actionBadge(title: "Hit", systemImage: "arrow.left", tint: Color.green)
-                actionBadge(title: "Stand", systemImage: "arrow.right", tint: Color.red)
-            }
-            .frame(maxWidth: .infinity, alignment: .center)
-
-                Group {
-                    if gameViewModel.peeking {
-                        actionBadge(title: "Hide", systemImage: "arrow.up", tint: Color.yellow)
-                    } else {
-                        actionBadge(title: "Peek", systemImage: "arrow.down", tint: Color.yellow)
-                    }
+        ZStack(alignment: .center) {
+            VStack(alignment: .center) {
+                HStack(spacing: 12) {
+                    actionBadge(title: "Hit", systemImage: "arrow.left", tint: Color.green)
+                    actionBadge(title: "Stand", systemImage: "arrow.right", tint: Color.red)
                 }
-                .frame(maxWidth: 220)
+                .frame(maxWidth: .infinity, alignment: .center)
+
+                    Group {
+                        if gameViewModel.peeking {
+                            actionBadge(title: "Hide", systemImage: "arrow.up", tint: Color.yellow)
+                        } else {
+                            actionBadge(title: "Peek", systemImage: "arrow.down", tint: Color.yellow)
+                        }
+                    }
+                    .frame(maxWidth: .infinity)
+            }
+            .frame(maxWidth: .infinity)
+            
         }
-        .frame(maxWidth: .infinity)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .contentShape(Rectangle())
         .highPriorityGesture(
             DragGesture(minimumDistance: 10)
@@ -49,6 +53,7 @@ struct ActionsView: View {
                     }
             }
         )
+        .background(Color.black.opacity(0.4))
     }
 
     private func actionBadge(title: String, systemImage: String, tint: Color) -> some View {
@@ -66,8 +71,6 @@ struct ActionsView: View {
             Text(title)
                 .font(.system(size: 15, weight: .semibold, design: .rounded))
                 .foregroundStyle(.white.opacity(0.94))
-
-            Spacer(minLength: 0)
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 14)

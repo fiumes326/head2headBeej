@@ -27,8 +27,6 @@ struct GameView: View {
 				}
 				.padding(.top, 20)
 
-				Spacer()
-
 				ActionsView(
 					onSwipeLeft: gameViewModel.hit,
 					onSwipeRight: {
@@ -37,10 +35,8 @@ struct GameView: View {
 					onSwipeDown: gameViewModel.seePlayerCard,
 					onSwipeUp: gameViewModel.hidePlayerCard
 				)
-				.frame(maxWidth: .infinity)
+				.frame(maxWidth: .infinity, maxHeight: .infinity)
 				.padding(.vertical, 16)
-
-				Spacer()
 
 				VStack(spacing: 16) {
                     HStack {
