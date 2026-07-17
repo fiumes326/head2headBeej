@@ -134,12 +134,18 @@ final class GameViewModel: ObservableObject {
         guard let currentPlayerIndex = gameManager.players.firstIndex(where: { $0.id == gameManager.whoTurns }) else {
             return
         }
+        guard !gameManager.players[currentPlayerIndex].currentHand.isEmpty else {
+            return
+        }
         gameManager.players[currentPlayerIndex].currentHand[0].isFlipped = true
         peeking = true
     }
     
     func hidePlayerCard() {
         guard let currentPlayerIndex = gameManager.players.firstIndex(where:{ $0.id == gameManager.whoTurns}) else {
+            return
+        }
+        guard !gameManager.players[currentPlayerIndex].currentHand.isEmpty else {
             return
         }
         gameManager.players[currentPlayerIndex].currentHand[0].isFlipped = false

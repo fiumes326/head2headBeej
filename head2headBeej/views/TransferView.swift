@@ -17,21 +17,25 @@ struct TransferView: View {
                 Text(gameViewModel.getCurrentPlayer()?.name ?? "")
                     .font(.title)
                     .foregroundStyle(Color.white)
-                Button("Ready"){
+                Button {
                     gameViewModel.transfer = false
+                } label: {
+                    Text("Ready")
+                        .font(.system(size: 16, weight: .bold, design: .rounded))
+                        .foregroundStyle(Color.white)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 15)
+                        .background(
+                            LinearGradient(
+                                colors: [Color(red: 0.11, green: 0.47, blue: 0.88), Color(red: 0.05, green: 0.34, blue: 0.77)],
+                                startPoint: .leading,
+                                endPoint: .trailing
+                            ),
+                            in: RoundedRectangle(cornerRadius: 22, style: .continuous)
+                        )
+                        .contentShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
                 }
-                .font(.system(size: 16, weight: .bold, design: .rounded))
-                .foregroundStyle(.white)
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 15)
-                .background(
-                    LinearGradient(
-                        colors: [Color(red: 0.11, green: 0.47, blue: 0.88), Color(red: 0.05, green: 0.34, blue: 0.77)],
-                        startPoint: .leading,
-                        endPoint: .trailing
-                    ),
-                    in: RoundedRectangle(cornerRadius: 22, style: .continuous)
-                )
+                .buttonStyle(.plain)
             }
         }
        

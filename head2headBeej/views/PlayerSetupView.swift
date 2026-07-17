@@ -35,9 +35,14 @@ struct PlayerSetupView: View {
                     .foregroundStyle(.white.opacity(0.85))
                     .frame(maxWidth: .infinity, alignment: .leading)
 
-                TextField("Name", text: $player1Name)
+                TextField(
+                    "",
+                    text: $player1Name,
+                    prompt: Text("Name").foregroundStyle(.black.opacity(0.5))
+                )
                     .textInputAutocapitalization(.words)
                     .autocorrectionDisabled()
+                    .foregroundStyle(.black)
                     .font(.system(size: 18, weight: .medium, design: .rounded))
                     .padding(.horizontal, 18)
                     .padding(.vertical, 16)
@@ -54,9 +59,14 @@ struct PlayerSetupView: View {
                     .foregroundStyle(.white.opacity(0.85))
                     .frame(maxWidth: .infinity, alignment: .leading)
 
-                TextField("Name", text: $player2Name)
+                TextField(
+                    "",
+                    text: $player2Name,
+                    prompt: Text("Name").foregroundStyle(.black.opacity(0.5))
+                )
                     .textInputAutocapitalization(.words)
                     .autocorrectionDisabled()
+                    .foregroundStyle(.black)
                     .font(.system(size: 18, weight: .medium, design: .rounded))
                     .padding(.horizontal, 18)
                     .padding(.vertical, 16)
@@ -75,24 +85,29 @@ struct PlayerSetupView: View {
                 }
                 .pickerStyle(.segmented)
 
-                Button("Start Game") {
+                Button {
                     gameViewModel.gameManager.players[0].name = player1Name
                     gameViewModel.gameManager.players[1].name = player2Name
+                    gameViewModel.gameManager.bestOf = bestOf
                     gameViewModel.deal()
                     hasStarted = true
+                } label: {
+                    Text("Start Game")
+                        .font(.system(size: 16, weight: .bold, design: .rounded))
+                        .foregroundStyle(.white)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 15)
+                        .background(
+                            LinearGradient(
+                                colors: canStart ? [Color(red: 0.11, green: 0.47, blue: 0.88), Color(red: 0.05, green: 0.34, blue: 0.77)] : [Color.gray.opacity(0.5), Color.gray.opacity(0.4)],
+                                startPoint: .leading,
+                                endPoint: .trailing
+                            ),
+                            in: RoundedRectangle(cornerRadius: 22, style: .continuous)
+                        )
+                        .contentShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
                 }
-                .font(.system(size: 16, weight: .bold, design: .rounded))
-                .foregroundStyle(.white)
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 15)
-                .background(
-                    LinearGradient(
-                        colors: canStart ? [Color(red: 0.11, green: 0.47, blue: 0.88), Color(red: 0.05, green: 0.34, blue: 0.77)] : [Color.gray.opacity(0.5), Color.gray.opacity(0.4)],
-                        startPoint: .leading,
-                        endPoint: .trailing
-                    ),
-                    in: RoundedRectangle(cornerRadius: 22, style: .continuous)
-                )
+                .buttonStyle(.plain)
                 .disabled(!canStart)
 
                 .padding(.top, 10)

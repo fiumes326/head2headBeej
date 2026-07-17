@@ -30,7 +30,8 @@ struct CardView: View {
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
             }
             .frame(width: 100, height: 150)
-            .shadow(color: .black.opacity(0.18), radius: 5, x: 0, y: 3)
+            .shadow(color: .black.opacity(0.28), radius: 10, x: 0, y: 7)
+            .shadow(color: .black.opacity(0.14), radius: 2, x: 0, y: 1)
         } else {
             ZStack {
                 RoundedRectangle(cornerRadius: 18, style: .continuous)
@@ -51,7 +52,8 @@ struct CardView: View {
                     .padding(10)
             }
                 .frame(width: 100, height: 150)
-                .shadow(color: .black.opacity(0.18), radius: 5, x: 0, y: 3)
+                .shadow(color: .black.opacity(0.28), radius: 10, x: 0, y: 7)
+                .shadow(color: .black.opacity(0.14), radius: 2, x: 0, y: 1)
         }
     }
 
