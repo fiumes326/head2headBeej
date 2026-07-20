@@ -5,15 +5,23 @@ struct WinningView: View {
     @EnvironmentObject var gameViewModel: GameViewModel
     var body: some View {
         VStack {
-            Text("Winner!")
-                .font(.largeTitle)
-                .fontWeight(.bold)
-                .foregroundStyle(Color.white)
-                .padding()
-            Text("\(gameViewModel.RoundWinner?.name ?? "") wins with \(gameViewModel.RoundWinner?.score ?? 0) points!")
-                .font(.title)
-                .foregroundStyle(Color.white)
-                .padding()
+            if gameViewModel.RoundWinner?.name == nil {
+                Text("It's a Tie!")
+                    .font(.largeTitle)
+                    .foregroundStyle(Color.white)
+                    .padding()
+            } else {
+                Text("Winner!")
+                    .font(.largeTitle)
+                    .fontWeight(.bold)
+                    .foregroundStyle(Color.white)
+                    .padding()
+                
+                Text("\(gameViewModel.RoundWinner?.name ?? "") wins with \(gameViewModel.RoundWinner?.score ?? 0) points!")
+                    .font(.title)
+                    .foregroundStyle(Color.white)
+                    .padding()
+            }
             Button("Start Next Round") {
                 gameViewModel.deal()
                 gameViewModel.RoundWinner = nil
@@ -35,4 +43,10 @@ struct WinningView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.black.opacity(0.6))
     }
+}
+
+
+#Preview {
+    WinningView()
+        .environmentObject(GameViewModel())
 }

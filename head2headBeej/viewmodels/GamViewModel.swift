@@ -101,7 +101,8 @@ final class GameViewModel: ObservableObject {
             hidePlayerCard()
             let winner = gameManager.checkWinner()
             if winner == nil {
-                // It's a tie, change deal first and start new round
+                self.RoundWinner = nil
+                self.winningView = true
                 gameManager.dealFirst = gameManager.players.first(where: { $0.id != gameManager.dealFirst })?.id ?? gameManager.dealFirst
                 gameManager.whoTurns = gameManager.dealFirst
                 deal()

@@ -8,25 +8,29 @@ struct ActionsView: View {
     var onSwipeUp: () -> Void
 
 	var body: some View {
-        ZStack(alignment: .center) {
-            VStack(alignment: .center) {
+        GeometryReader { _ in
+            VStack(spacing: 12) {
                 HStack(spacing: 12) {
                     actionBadge(title: "Hit", systemImage: "arrow.left", tint: Color.green)
-                    actionBadge(title: "Stand", systemImage: "arrow.right", tint: Color.red)
-                }
-                .frame(maxWidth: .infinity, alignment: .center)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
 
-                    Group {
-                        if gameViewModel.peeking {
-                            actionBadge(title: "Hide", systemImage: "arrow.up", tint: Color.yellow)
-                        } else {
-                            actionBadge(title: "Peek", systemImage: "arrow.down", tint: Color.yellow)
-                        }
+                    actionBadge(title: "Stand", systemImage: "arrow.right", tint: Color.red)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+
+                Group {
+                    if gameViewModel.peeking {
+                        actionBadge(title: "Hide", systemImage: "arrow.up", tint: Color.yellow)
+                    } else {
+                        actionBadge(title: "Peek", systemImage: "arrow.down", tint: Color.yellow)
                     }
-                    .frame(maxWidth: .infinity)
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
-            .frame(maxWidth: .infinity)
-            
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .padding(.horizontal, 12)
+            .padding(.vertical, 12)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .contentShape(Rectangle())
@@ -72,8 +76,12 @@ struct ActionsView: View {
                 .font(.system(size: 15, weight: .semibold, design: .rounded))
                 .foregroundStyle(.white.opacity(0.94))
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .padding(.horizontal, 16)
-        .padding(.vertical, 14)
-        .frame(width: 150)
+        .padding(.vertical, 12)
+        .background(
+            RoundedRectangle(cornerRadius: 14, style: .continuous)
+                .fill(tint.opacity(0.18))
+        )
     }
 }
