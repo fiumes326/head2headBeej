@@ -83,5 +83,24 @@ struct ActionsView: View {
             RoundedRectangle(cornerRadius: 14, style: .continuous)
                 .fill(tint.opacity(0.18))
         )
+        .gesture(
+            TapGesture()
+                .onEnded {
+                    switch title {
+                    case "Hit":
+                        onSwipeLeft()
+                    case "Stand":
+                        onSwipeRight()
+                    case "Peek":
+                        onSwipeDown()
+                        gameViewModel.peeking = true
+                    case "Hide":
+                        onSwipeUp()
+                        gameViewModel.peeking = false
+                    default:
+                        break
+                    }
+                }
+        )
     }
 }
